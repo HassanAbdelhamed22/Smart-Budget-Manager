@@ -46,16 +46,17 @@ cd Smart-Budget-Manager
 
 ### 2. Install Dependencies
 
-# PHP dependencies
+1. PHP dependencies
 
 composer install
 
-# Frontend assets
+2. Frontend assets
 
 npm install
 npm run build
 
 ### 3. Configure Environment
+
 
 cp .env.example .env
 
@@ -75,17 +76,17 @@ DB_PASSWORD=
 
 ### 4. Generate Keys & Setup DB
 
-# Generate application key
+1. Generate application key
 
 php artisan key:generate
 
-# Create database (MySQL example)
+2. Create database (MySQL example)
 
 mysql -u root -p -e "CREATE DATABASE smart_budget_manager;"
 
-# Run migrations and seed sample data
+3. Run migrations
 
-php artisan migrate --seed
+php artisan migrate
 
 ### 5. Start Server
 
