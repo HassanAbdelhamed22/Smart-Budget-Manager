@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,3 +37,15 @@ Route::post('/email/verification-notification', [EmailVerificationNotificationCo
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth:sanctum');
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/accounts', [AccountController::class, 'index']);
+    Route::get('/accounts/{id}', [AccountController::class, 'show']);
+    Route::post('/accounts', [AccountController::class, 'store']);
+    Route::put('/accounts/{id}', [AccountController::class, 'update']);
+    Route::delete('/accounts/{id}', [AccountController::class, 'destroy']);
+});
+
+Route::middleware('auth:sanctum')->get('/user', function () {
+    return response()->json(['user_id' => auth()->id(), 'user' => auth()->user()]);
+});Route::middleware('auth:sanctum')->get('/debug-accounts', [AccountController::class, 'debugAccounts']);
