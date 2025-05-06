@@ -8,50 +8,55 @@ A powerful Laravel-based personal finance application to track budgets, manage t
 ![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
 
 ## Table of Contents
-- [Features](#-features)
-- [Quick Start](#-quick-start)
-- [Installation Guide](#-installation-guide)
-- [Development](#-development)
-- [Production Deployment](#-production-deployment)
-- [Troubleshooting](#-troubleshooting)
-- [Contributing](#-contributing)
-- [License](#-license)
+
+-   [Features](#-features)
+-   [Quick Start](#-quick-start)
+-   [Installation Guide](#-installation-guide)
+-   [Development](#-development)
+-   [Production Deployment](#-production-deployment)
+-   [Troubleshooting](#-troubleshooting)
+-   [Contributing](#-contributing)
+-   [License](#-license)
 
 ## ✨ Features
-- 📊 Visual budget tracking
-- 💸 Transaction management
-- 📈 Spending analytics
-- 🔐 Secure authentication
-- 📱 Responsive design
-- 📤 CSV/Excel export
+
+-   📊 Visual budget tracking
+-   💸 Transaction management
+-   📈 Spending analytics
+-   🔐 Secure authentication
+-   📱 Responsive design
+-   📤 CSV/Excel export
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **PHP** ≥ 8.1
-- **Composer** (latest version)
-- **Node.js** ≥ 16.x + **npm**
-- **MySQL** ≥ 5.7 or **PostgreSQL** ≥ 10
-- **Git**
+
+-   **PHP** ≥ 8.1
+-   **Composer** (latest version)
+-   **Node.js** ≥ 16.x + **npm**
+-   **MySQL** ≥ 5.7 or **PostgreSQL** ≥ 10
+-   **Git**
 
 ## 🛠 Installation Guide
 
 ### 1. Clone & Setup
-```bash
+
 git clone https://github.com/HassanAbdelhamed22/Smart-Budget-Manager.git
 cd Smart-Budget-Manager
 
 ### 2. Install Dependencies
-```bash
+
 # PHP dependencies
+
 composer install
 
 # Frontend assets
+
 npm install
 npm run build
 
 ### 3. Configure Environment
-```bash
+
 cp .env.example .env
 
 Edit .env with your settings:
@@ -69,16 +74,19 @@ DB_USERNAME=root
 DB_PASSWORD=
 
 ### 4. Generate Keys & Setup DB
-```bash
+
 # Generate application key
+
 php artisan key:generate
 
 # Create database (MySQL example)
+
 mysql -u root -p -e "CREATE DATABASE smart_budget_manager;"
 
 # Run migrations and seed sample data
+
 php artisan migrate --seed
 
 ### 5. Start Server
-```bash
+
 php artisan serve
