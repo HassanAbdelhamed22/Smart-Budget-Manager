@@ -3,8 +3,12 @@
 namespace App\Providers;
 
 use App\Domain\Repositories\AccountRepositoryInterface;
+use App\Domain\Repositories\BudgetRepositoryInterface;
+use App\Domain\Repositories\TransactionRepositoryInterface;
 use App\Domain\User\UserRepositoryInterface;
 use App\Infrastructure\Repositories\EloquentAccountRepository;
+use App\Infrastructure\Repositories\EloquentBudgetRepository;
+use App\Infrastructure\Repositories\EloquentTransactionRepository;
 use App\Infrastructure\Repositories\EloquentUserRepository;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\ServiceProvider;
@@ -18,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(UserRepositoryInterface::class, EloquentUserRepository::class);
         $this->app->bind(AccountRepositoryInterface::class, EloquentAccountRepository::class);
+        $this->app->bind(BudgetRepositoryInterface::class, EloquentBudgetRepository::class);
+        $this->app->bind(TransactionRepositoryInterface::class, EloquentTransactionRepository::class);
     }
 
     /**
