@@ -23,7 +23,10 @@ class TransactionController extends Controller
       return response()->json(['error' => 'Unauthorized'], 401);
     }
     $transactions = $this->transactionService->getUserTransactions($userId);
-    return response()->json($transactions);
+    $serializedTransactions = array_map(function ($transaction) {
+      return $transaction->toArray();
+    }, $transactions);
+    return response()->json($serializedTransactions);
   }
 
   public function show(int $id): JsonResponse
@@ -32,7 +35,7 @@ class TransactionController extends Controller
     if (!$transaction || $transaction->getUserId() !== auth()->id()) {
       return response()->json(['error' => 'Transaction not found or unauthorized'], 403);
     }
-    return response()->json($transaction);
+    return response()->json($transaction->toArray());
   }
 
   public function store(Request $request): JsonResponse
@@ -45,8 +48,8 @@ class TransactionController extends Controller
       'date' => 'required|date',
       'payee' => 'nullable|string',
       'notes' => 'nullable|string',
-      'frequency' => 'nullable|in:weekly,monthly', // For recurring
-      'end_date' => 'nullable|date|after:date', // For recurring
+      'frequency' => 'nullable|in:weekly,monthly',
+      'end_date' => 'nullable|date|after:date',
     ]);
 
     $userId = auth()->id();
