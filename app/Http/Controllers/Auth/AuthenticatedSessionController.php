@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Application\Auth\LoginUserService;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
+use App\Models\User as EloquentUser;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Handle an incoming authentication request.
-     */
-    public function store(LoginRequest $request): JsonResponse
+    public function __construct(private LoginUserService $loginUserService) {}
+
+    public function store(Request $request): JsonResponse
     {
-        $request->authenticate();
+        $validated = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
-        $user = Auth::user();
+        $user = $this->loginUserService->login($validated['email'], $validated['password']);
 
-        // Generate a new API token for the user
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
