@@ -4,8 +4,8 @@ namespace App\Domain\Entities;
 
 class RecurringTransaction extends TransactionEntity
 {
-  private string $frequency; // e.g., 'weekly', 'monthly'
-  private ?string $endDate = null;
+  private string $frequency;
+  private ?string $endDate;
 
   public function __construct(
     int $userId,
@@ -15,7 +15,7 @@ class RecurringTransaction extends TransactionEntity
     string $type,
     string $date,
     string $frequency,
-    ?string $endDate = null,
+    ?string $endDate,
     ?string $payee = null,
     ?string $notes = null,
     ?int $id = null
@@ -35,21 +35,11 @@ class RecurringTransaction extends TransactionEntity
     return $this->endDate;
   }
 
-  // Setters
-  public function updateFrequency(string $frequency): void
-  {
-    $this->frequency = $frequency;
-  }
-  public function setEndDate(?string $endDate): void
-  {
-    $this->endDate = $endDate;
-  }
-
   public function toArray(): array
   {
-    return array_merge(parent::toArray(), [
-      'frequency' => $this->frequency,
-      'end_date' => $this->endDate,
-    ]);
+    $data = parent::toArray();
+    $data['frequency'] = $this->frequency;
+    $data['end_date'] = $this->endDate;
+    return $data;
   }
 }
