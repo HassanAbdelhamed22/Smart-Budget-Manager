@@ -1,62 +1,128 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Smart Budget Manager
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel-based application to manage your personal finances, track budgets, and handle transactions efficiently.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Installation Steps](#installation-steps)
+  - [Clone the Repository](#clone-the-repository)
+  - [Install PHP Dependencies](#install-php-dependencies)
+  - [Install Frontend Dependencies](#install-frontend-dependencies)
+  - [Set Up Environment File](#set-up-environment-file)
+  - [Generate Application Key](#generate-application-key)
+  - [Set Up the Database](#set-up-the-database)
+  - [Run the Application](#run-the-application)
+- [Troubleshooting](#troubleshooting)
+- [Additional Notes](#additional-notes)
+- [Contributing](#contributing)
+- [License](#license)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Prerequisites
 
-## Learning Laravel
+Before setting up the Smart Budget Manager on your device, ensure you have the following installed:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **PHP** (version 8.1 or higher)
+- **Composer** (dependency manager for PHP)
+- **Node.js** and **npm** (for frontend assets)
+- **MySQL** (or another supported database like PostgreSQL)
+- **Git** (to clone the repository)
+- A web server like **Apache** or **Nginx** (or use Laravel's built-in server for development)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Installation Steps
 
-## Laravel Sponsors
+Follow these steps to set up and run the Smart Budget Manager on your device:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 1. Clone the Repository
 
-### Premium Partners
+Open a terminal and clone the repository to your local machine:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development/)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+git clone https://github.com/HassanAbdelhamed22/Smart-Budget-Manager.git
+cd Smart-Budget-Manager
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Install PHP Dependencies
+Use Composer to install the required PHP packages:
+composer install
 
-## Code of Conduct
+If you encounter any issues, ensure your PHP version matches the requirements in composer.json.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Install Frontend Dependencies
+Install the JavaScript and CSS dependencies using npm:
+npm install
+npm run build
 
-## Security Vulnerabilities
+This will compile the frontend assets using Laravel Vite (or Laravel Mix, depending on the project setup).
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Set Up Environment File
+Copy the example environment file and configure it:
+cp .env.example .env
 
-## License
+Open the .env file in a text editor and update the following settings:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# Smart-Budget-Manager
+Database Configuration: Set your database credentials (e.g., MySQL):DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=smart_budget_manager
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+
+
+App URL: If you're using a custom domain or port, update:APP_URL=http://localhost
+
+
+
+
+Generate Application Key
+Generate a unique application key for Laravel:
+php artisan key:generate
+
+
+Set Up the Database
+Create a database for the app (e.g., using MySQL):
+mysql -u your_username -p
+CREATE DATABASE smart_budget_manager;
+EXIT;
+
+Run the migrations to set up the database tables:
+php artisan migrate
+
+Optionally, seed the database with sample data if the project includes seeders:
+php artisan db:seed
+
+
+Run the Application
+Start the Laravel development server:
+php artisan serve
+
+By default, the app will be available at http://localhost:8000. Open this URL in your browser to access the Smart Budget Manager.
+
+
+Troubleshooting
+
+Composer Issues: If composer install fails, ensure your PHP version matches the requirements in composer.json. You can check your PHP version with php -v.
+Database Connection Errors: Double-check your .env file for correct database credentials. Ensure your database server (e.g., MySQL) is running.
+Frontend Assets Not Loading: If the UI looks broken, ensure you ran npm install and npm run build successfully.
+Permission Issues: If you encounter file permission errors, adjust the permissions for the storage and bootstrap/cache directories:chmod -R 775 storage bootstrap/cache
+
+
+
+Additional Notes
+
+Authentication: If the app requires user authentication, you may need to register a new user through the app’s UI or use a default user provided by a seeder.
+Production Setup: For a production environment, configure a proper web server (e.g., Apache or Nginx) and set APP_ENV=production in your .env file. Also, run:php artisan config:cache
+php artisan route:cache
+
+
+Mail Configuration: If the app sends emails (e.g., for password resets), configure the mail settings in the .env file (e.g., using Mailtrap for testing).
+
+Contributing
+If you’d like to contribute to the Smart Budget Manager, feel free to fork the repository, make your changes, and submit a pull request.
+License
+This project is open-source and licensed under the MIT License. See the LICENSE file for more details.
