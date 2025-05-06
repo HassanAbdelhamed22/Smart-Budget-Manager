@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Domain\Repositories\AccountRepositoryInterface;
 use App\Domain\User\UserRepositoryInterface;
+use App\Infrastructure\Repositories\EloquentAccountRepository;
 use App\Infrastructure\Repositories\EloquentUserRepository;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\ServiceProvider;
@@ -15,6 +17,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(UserRepositoryInterface::class, EloquentUserRepository::class);
+        $this->app->bind(AccountRepositoryInterface::class, EloquentAccountRepository::class);
     }
 
     /**
