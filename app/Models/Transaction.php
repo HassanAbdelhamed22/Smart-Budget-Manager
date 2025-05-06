@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'user_id',
         'account_id',
@@ -18,9 +15,16 @@ class Transaction extends Model
         'date',
         'payee',
         'notes',
+        'frequency',
+        'end_date',
     ];
 
-    // Relationships
+    protected $casts = [
+        'amount' => 'decimal:2',
+        'date' => 'date',
+        'end_date' => 'date',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
