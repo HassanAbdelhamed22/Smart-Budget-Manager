@@ -41,26 +41,35 @@ A powerful Laravel-based personal finance application to track budgets, manage t
 
 ### 1. Clone & Setup
 
+```bash
 git clone https://github.com/HassanAbdelhamed22/Smart-Budget-Manager.git
 cd Smart-Budget-Manager
+```
 
 ### 2. Install Dependencies
 
-1. PHP dependencies
+1. PHP dependencies:
 
+```bash
 composer install
+```
 
-2. Frontend assets
+2. Frontend assets:
 
+```bash
 npm install
 npm run build
+```
 
 ### 3. Configure Environment
 
-
+```bash
 cp .env.example .env
+```
 
-Edit .env with your settings:
+Edit `.env` with your settings:
+
+```env
 APP_NAME="Smart Budget Manager"
 APP_ENV=local
 APP_KEY=
@@ -73,21 +82,30 @@ DB_PORT=3306
 DB_DATABASE=smart_budget_manager
 DB_USERNAME=root
 DB_PASSWORD=
+```
 
 ### 4. Generate Keys & Setup DB
 
-1. Generate application key
+1. Generate application key:
 
+```bash
 php artisan key:generate
+```
 
-2. Create database (MySQL example)
+2. Create database (MySQL example):
 
+```bash
 mysql -u root -p -e "CREATE DATABASE smart_budget_manager;"
+```
 
-3. Run migrations
+3. Run migrations:
 
+```bash
 php artisan migrate
+```
 
 ### 5. Start Server
 
+```bash
 php artisan serve
+```
