@@ -7,7 +7,6 @@ use App\Domain\Entities\RecurringTransaction;
 use App\Domain\Repositories\TransactionRepositoryInterface;
 use App\Models\Account as AccountModel;
 use App\Models\Transaction as TransactionModel;
-use App\Models\RecurringTransaction as RecurringTransactionModel;
 
 class EloquentTransactionRepository implements TransactionRepositoryInterface
 {
@@ -15,54 +14,26 @@ class EloquentTransactionRepository implements TransactionRepositoryInterface
   {
     $model = TransactionModel::find($id);
     if (!$model) return null;
-    return new Transaction(
-      $model->user_id,
-      $model->account_id,
-      $model->category_id,
-      $model->amount,
-      $model->type,
-      $model->date,
-      $model->payee,
-      $model->notes,
-      $model->id
-    );
+    return $this->mapToEntity($model);
   }
 
   public function findByUserId(int $userId): array
   {
-    $models = TransactionModel::where('user_id', $userId)->get();
-    return $models->map(function ($model) {
-      return new Transaction(
-        $model->user_id,
-        $model->account_id,
-        $model->category_id,
-        $model->amount,
-        $model->type,
-        $model->date,
-        $model->payee,
-        $model->notes,
-        $model->id
-      );
+    $models = TransactionModel::where('user_id', $userId)
+      ->whereNull('frequency')
+      ->get();
+    return $models->map(function (TransactionModel $model) {
+      return $this->mapToEntity($model);
     })->toArray();
   }
 
   public function findRecurringByUserId(int $userId): array
   {
-    $models = RecurringTransactionModel::where('user_id', $userId)->get();
-    return $models->map(function ($model) {
-      return new RecurringTransaction(
-        $model->user_id,
-        $model->account_id,
-        $model->category_id,
-        $model->amount,
-        $model->type,
-        $model->date,
-        $model->frequency,
-        $model->end_date,
-        $model->payee,
-        $model->notes,
-        $model->id
-      );
+    $models = TransactionModel::where('user_id', $userId)
+      ->whereNotNull('frequency')
+      ->get();
+    return $models->map(function (TransactionModel $model) {
+      return $this->mapToEntity($model);
     })->toArray();
   }
 
@@ -70,7 +41,6 @@ class EloquentTransactionRepository implements TransactionRepositoryInterface
   {
     $models = AccountModel::where('user_id', $userId)->get();
     return $models->map(function ($model) {
-      // Assuming Account entity exists or create a simple one
       return new \App\Domain\Entities\AccountEntity(
         $model->user_id,
         $model->name,
@@ -85,7 +55,22 @@ class EloquentTransactionRepository implements TransactionRepositoryInterface
 
   public function save(Transaction $transaction): void
   {
-    $data = $transaction->toArray();
+    $data = [
+      'user_id' => $transaction->getUserId(),
+      'account_id' => $transaction->getAccountId(),
+      'category_id' => $transaction->getCategoryId(),
+      'amount' => $transaction->getAmount(),
+      'type' => $transaction->getType(),
+      'date' => $transaction->getDate(),
+      'payee' => $transaction->getPayee(),
+      'notes' => $transaction->getNotes(),
+    ];
+
+    if ($transaction instanceof RecurringTransaction) {
+      $data['frequency'] = $transaction->getFrequency();
+      $data['end_date'] = $transaction->getEndDate();
+    }
+
     if ($transaction->getId()) {
       $model = TransactionModel::find($transaction->getId());
       if ($model) $model->update($data);
@@ -98,5 +83,35 @@ class EloquentTransactionRepository implements TransactionRepositoryInterface
   public function delete(int $id): void
   {
     TransactionModel::destroy($id);
+  }
+
+  private function mapToEntity(TransactionModel $model): Transaction
+  {
+    if ($model->frequency) {
+      return new RecurringTransaction(
+        $model->user_id,
+        $model->account_id,
+        $model->category_id,
+        (float) $model->amount,
+        $model->type,
+        $model->date->toDateString(),
+        $model->frequency,
+        $model->end_date ? $model->end_date->toDateString() : null,
+        $model->payee,
+        $model->notes,
+        $model->id
+      );
+    }
+    return new Transaction(
+      $model->user_id,
+      $model->account_id,
+      $model->category_id,
+      (float) $model->amount,
+      $model->type,
+      $model->date->toDateString(),
+      $model->payee,
+      $model->notes,
+      $model->id
+    );
   }
 }
