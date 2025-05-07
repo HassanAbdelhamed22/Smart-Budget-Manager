@@ -24,8 +24,17 @@ class BudgetController extends Controller
       return response()->json(['error' => 'Unauthorized'], 401);
     }
     $budgets = $this->budgetService->getUserBudgets($userId);
-    // Convert Budget entities to arrays
-    $budgetsArray = array_map(fn($budget) => $budget->toArray(), $budgets);
+
+    // Convert Budget entities to arrays with category info
+    $budgetsArray = array_map(function ($budget) {
+      $budgetData = $budget->toArray();
+      $category = Category::find($budget->getCategoryId());
+      $budgetData['category_name'] = $category->name ?? null;
+      $budgetData['category_type'] = $category->type ?? null;
+      $budgetData['category_color'] = $category->color ?? null;
+      return $budgetData;
+    }, $budgets);
+
     return response()->json($budgetsArray);
   }
 
@@ -35,8 +44,15 @@ class BudgetController extends Controller
     if (!$budget || $budget->getUserId() !== auth()->id()) {
       return response()->json(['error' => 'Budget not found or unauthorized'], 403);
     }
-    // Convert Budget entity to array
-    return response()->json($budget->toArray());
+
+    // Convert Budget entity to array with category info
+    $budgetData = $budget->toArray();
+    $category = Category::find($budget->getCategoryId());
+    $budgetData['category_name'] = $category->name ?? null;
+    $budgetData['category_type'] = $category->type ?? null;
+    $budgetData['category_color'] = $category->color ?? null;
+
+    return response()->json($budgetData);
   }
 
   public function store(Request $request): JsonResponse
