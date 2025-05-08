@@ -25,10 +25,10 @@ class BudgetController extends Controller
     }
     $budgets = $this->budgetService->getUserBudgets($userId);
 
-    // Convert Budget entities to arrays with category info
     $budgetsArray = array_map(function ($budget) {
       $budgetData = $budget->toArray();
       $category = Category::find($budget->getCategoryId());
+      $budgetData['category_id'] = $budget->getCategoryId(); // Include category_id
       $budgetData['category_name'] = $category->name ?? null;
       $budgetData['category_type'] = $category->type ?? null;
       $budgetData['category_color'] = $category->color ?? null;
@@ -45,9 +45,9 @@ class BudgetController extends Controller
       return response()->json(['error' => 'Budget not found or unauthorized'], 403);
     }
 
-    // Convert Budget entity to array with category info
     $budgetData = $budget->toArray();
     $category = Category::find($budget->getCategoryId());
+    $budgetData['category_id'] = $budget->getCategoryId(); // Include category_id
     $budgetData['category_name'] = $category->name ?? null;
     $budgetData['category_type'] = $category->type ?? null;
     $budgetData['category_color'] = $category->color ?? null;
@@ -63,7 +63,7 @@ class BudgetController extends Controller
       'amount' => 'required|numeric',
       'start_date' => 'required|date',
       'end_date' => 'required|date|after_or_equal:start_date',
-      'type' => 'nullable|in:income,expense',
+      'category_type' => 'nullable|in:income,expense', // Changed to category_type
       'color' => 'nullable|string|regex:/^#[0-9a-fA-F]{6}$/',
     ]);
 
@@ -86,7 +86,7 @@ class BudgetController extends Controller
       $category = Category::create([
         'user_id' => $userId,
         'name' => $validated['category_name'],
-        'type' => $validated['type'] ?? 'expense',
+        'type' => $validated['category_type'] ?? 'expense',
         'color' => $validated['color'] ?? '#6b7280',
       ]);
       $categoryId = $category->id;
@@ -107,12 +107,12 @@ class BudgetController extends Controller
   public function update(Request $request, int $id): JsonResponse
   {
     $validated = $request->validate([
-      'category_name' => 'required_without:category_id|string|max:255',
-      'category_id' => 'required_without:category_name|integer|exists:categories,id',
+      'category_id' => 'nullable|integer|exists:categories,id',
+      'category_name' => 'nullable|string|max:255',
       'amount' => 'required|numeric',
       'start_date' => 'required|date',
       'end_date' => 'required|date|after_or_equal:start_date',
-      'type' => 'nullable|in:income,expense',
+      'category_type' => 'nullable|in:income,expense',
       'color' => 'nullable|string|regex:/^#[0-9a-fA-F]{6}$/',
     ]);
 
@@ -131,15 +131,30 @@ class BudgetController extends Controller
         return response()->json(['error' => 'Category not found or unauthorized'], 404);
       }
       $categoryId = $category->id;
-    } else {
+
+      // Update category attributes if category_name, category_type, or color is provided
+      if (isset($validated['category_name'])) {
+        $category->name = $validated['category_name'];
+      }
+      if (isset($validated['category_type'])) {
+        $category->type = $validated['category_type'];
+      }
+      if (isset($validated['color'])) {
+        $category->color = $validated['color'];
+      }
+      $category->save();
+    } elseif (isset($validated['category_name'])) {
+      // Create new category if no category_id is provided
       $category = Category::create([
         'user_id' => $userId,
         'name' => $validated['category_name'],
-        'type' => $validated['type'] ?? 'expense',
+        'type' => $validated['category_type'] ?? 'expense',
         'color' => $validated['color'] ?? '#6b7280',
       ]);
       $categoryId = $category->id;
       logger('New category created: ' . $validated['category_name'] . ' for user_id: ' . $userId);
+    } else {
+      return response()->json(['error' => 'Either category_id or category_name is required'], 422);
     }
 
     $dto = new BudgetDTO(
@@ -151,7 +166,14 @@ class BudgetController extends Controller
     );
     try {
       $this->budgetService->updateBudget($id, $dto);
-      return response()->json(['message' => 'Budget updated successfully']);
+      $budget = $this->budgetService->getBudget($id); // Fetch updated budget
+      $budgetData = $budget->toArray();
+      $category = Category::find($budget->getCategoryId());
+      $budgetData['category_id'] = $budget->getCategoryId();
+      $budgetData['category_name'] = $category->name ?? null;
+      $budgetData['category_type'] = $category->type ?? null;
+      $budgetData['category_color'] = $category->color ?? null;
+      return response()->json($budgetData);
     } catch (\Exception $e) {
       return response()->json(['error' => $e->getMessage()], 404);
     }
